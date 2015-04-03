@@ -26,9 +26,9 @@ module Json
 
       public
 
-      def initialize( opts )
+      def initialize( opts = {} )
         self.object_handler_class = opts[:object_handler_class] || DefaultObjectHandler
-        self.settings = Settings.new( opts[:settings] )
+        self.settings = Settings.new( opts[:settings] || {} )
         self.object_tracker = Hash.new
         initialize_object_handler
       end
@@ -44,22 +44,25 @@ module Json
           # The object is null
           when json_result.nil?
             return json_result
-          # The object should have been previously stored
-          when json_result.has_key? ( Identities::Reference ) 
-            reference = json_result[ Identities::Reference ]
-            return self.object_tracker[ reference ]
-          # The object should have been previously stored
-          when json_result.has_key? ( Identities::Values ) 
-            return inflate!(json_result[ Identities::Values ], json_path )
           # If the object is an array, do the recursive step
-          when json_result.is_a? Array
-            json_result.map! do | json_obj |
-              inflate!(json_obj, "#{ json_path }[ #{ i } ]" )
+          when json_result.is_a?(Array)
+            json_result.map!.with_index do | json_obj, i |
+              inflate!(json_obj, "#{ json_path }[#{ i }]" )
             end
             return json_result
           # Your JSON is a hash
-          when json_result.is_a? Hash
-            return self.object_handler.process_object( json_result, json_path )
+          when json_result.is_a?(Hash)
+            case
+              # The object should have been previously stored
+              when json_result.has_key?( Identities::Reference ) 
+                reference = json_result[ Identities::Reference ]
+                return self.object_tracker[ reference ]
+              # The object should have been previously stored
+              when json_result.has_key?( Identities::Values ) 
+                return inflate!(json_result[ Identities::Values ], json_path )
+              else
+                return self.object_handler.process_object( json_result, json_path )
+            end
         end
         json_result
       end

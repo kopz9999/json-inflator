@@ -1,1 +1,1 @@
-[{"name":"RevSpring","id":1},{"name":"American Hospital","id":2,"parent":{"$ref":"$[0]"}},{"name":"Test 1","id":3,"parent":{"name":"Test 3","id":5}},{"name":"Test 2","id":4,"parent":{"$ref":"$[2][\"parent\"]"}}]
+[{"name":"RevSpring","id":1},{"name":"American Hospital","id":2,"parent":{"$ref":"$[0]"}},{"name":"Test 1","id":3,"parent":{"name":"Test 3","id":5}},{"name":"Test 2","id":4,"parent":{"$ref":"$[2].parent"}}]

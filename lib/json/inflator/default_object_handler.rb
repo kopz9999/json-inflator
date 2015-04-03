@@ -15,10 +15,11 @@ module Json
         self.parser = parser_val
       end
 
+      # Mutate the array
       def process_object( json_hash, json_path )
         self.parser.object_tracker[ json_path ] = json_hash
         json_hash.each do | k, v |
-          self.parser.inflate!( v, "#{ json_path }.#{ k }" )
+          json_hash[ k ] = self.parser.inflate!( v, "#{ json_path }.#{ k }" )
         end
       end
 
