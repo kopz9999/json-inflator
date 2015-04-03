@@ -1,11 +1,20 @@
 # Json::Inflator
 
 This ruby gem actually contains the necessary logic to recycle a JSON object. 
-This means that it rebuild a JSON that has been decycled:
+This means that it rebuilds a JSON that has been decycled:
 
 ```json
 [ { "id": 231, "name": "Test" }, { "$ref": "[0]" } ]
 ```
+
+To:
+
+```json
+[ { "id": 231, "name": "Test" }, { "id": 231, "name": "Test" } ]
+```
+
+Please note that both JSON objects point to same memory reference.
+The result is a Hash with circular references.
 
 ## Installation
 
