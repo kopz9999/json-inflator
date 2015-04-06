@@ -9,6 +9,7 @@ module Json
       module Identities
         Reference = '$ref'
         Values = '$values'
+        Identifier = '$id'
       end
 
       public
@@ -22,6 +23,10 @@ module Json
       # JSON objects
       attr_accessor :object_tracker
 
+      # This attribute contains the global hash container for
+      # JSON arrays
+      attr_accessor :array_tracker
+
       attr_accessor :settings
 
       public
@@ -30,6 +35,7 @@ module Json
         self.object_handler_class = opts[:object_handler_class] || DefaultObjectHandler
         self.settings = Settings.new( opts[:settings] || {} )
         self.object_tracker = Hash.new
+        self.array_tracker = Hash.new
         initialize_object_handler
       end
 
@@ -58,8 +64,13 @@ module Json
                 reference = json_result[ Identities::Reference ]
                 return self.object_tracker[ reference ]
               # The object should have been previously stored
-              when json_result.has_key?( Identities::Values ) 
-                return inflate!(json_result[ Identities::Values ], json_path )
+              when json_result.has_key?( Identities::Values ) && self.settings.preserve_arrays
+                referenced_array = self.array_tracker[ Identities::Identifier ]
+                if referenced_array.nil?
+                  referenced_array = inflate!(json_result[ Identities::Values ], json_path )
+                  self.array_tracker[ Identities::Identifier ] = referenced_array
+                end
+                return referenced_array
               else
                 return self.object_handler.process_object( json_result, json_path )
             end
