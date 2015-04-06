@@ -8,6 +8,9 @@
 /spec/reports/
 /tmp/
 
+# Custom data
+/spec/fixtures/recycled/sample3.json
+
 # OS generated files #
 ######################
 .DS_Store
