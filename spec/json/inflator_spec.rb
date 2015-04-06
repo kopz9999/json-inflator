@@ -54,7 +54,7 @@ describe Json::Inflator do
       Benchmark.realtime do
         processor = Json::Inflator::Parser.new
         processor.process! sample_hash
-      end      
+      end
     }
     
     it_behaves_like 'performance check', 'inflate', m_min_time, m_max_time
