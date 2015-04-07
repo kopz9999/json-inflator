@@ -15,6 +15,9 @@ module Json
             return self.parser.inflate_static_reference!( values )
           else
             self.parser.object_tracker[ current_identifier ] = json_hash
+            if self.parser.settings.strip_identifiers?
+              json_hash.delete( Parser::Identities::Identifier )
+            end
             json_hash.each do | k, v |
               json_hash[ k ] = self.parser.inflate_static_reference!( v )
             end
