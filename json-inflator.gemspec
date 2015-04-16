@@ -13,8 +13,11 @@ Gem::Specification.new do |spec|
     spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com' to prevent pushes to rubygems.org, or delete to allow pushes to any server."
   end
 
-  spec.summary       = %q{This ruby gem actually contains the necessary logic to recycle a JSON object.}
-  spec.description   = %q{It expects a decycled JSON and returns one with circular references.}
+  spec.summary       = %q{This ruby gem actually contains the necessary logic to
+    recycle a JSON object.}
+  spec.description   = %q{This ruby gem actually contains the necessary logic to 
+    recycle a JSON object. It expects a decycled JSON and returns one with circular
+     references.}
   spec.homepage      = "https://github.com/kopz9999/json-inflator"
   spec.license       = "Apache License, v2.0"
 
