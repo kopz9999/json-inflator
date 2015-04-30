@@ -1,0 +1,1 @@
+require 'json/inflator/core_ext/hash/inflator'
