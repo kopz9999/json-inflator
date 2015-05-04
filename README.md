@@ -69,7 +69,7 @@ The $values key will contain the elements of the array.
 ```
 
 ### Array Preservation
-The provided JSON maybe storing references for arrays also. By default, 'preserve_arrays' setting is true so it will check for
+The provided JSON may be storing references for arrays also. By default, 'preserve_arrays' setting is true so it will check for
 arrays when resolving a reference. In the case of static references, an array must be provided in the following way in order
 to be tracked:
 
