@@ -116,7 +116,7 @@ describe Json::Inflator do
     # These are milliseconds
     it_behaves_like 'inflate algorithm performance', :static_reference, 100, 220
     it_behaves_like 'inflate w/json parse performance', :static_reference, 300, 550
-    it_behaves_like 'inflate w/oj parse performance', :static_reference, 250, 500
+    it_behaves_like 'inflate w/oj parse performance', :static_reference, 250, 550
   end
 
 end

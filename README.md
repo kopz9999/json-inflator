@@ -36,17 +36,16 @@ Or install it yourself as:
 
 ### Quick Start
 
-Create an object of class Json::Inflator::Parser and process your json:
+Call inflate_json! method for a decycled array or hash:
 
 ```ruby
-  sample_hash = [ { "id" => 231, "name" => "Test" }, { "$ref" => "$[0]" } ]
-  parser = Json::Inflator::Parser.new
-  result = parser.process! sample_hash
+  sample_json = [ { "id" => 231, "name" => "Test" }, { "$ref" => "$[0]" } ]
+  result = sample_json.inflate_json!
   # result contains:
   # [ { "id" => 231, "name": "Test" }, { "id" => 231, "name" => "Test" } ]
 ```
 
-Take in account that the method #process! mutates the hash or array passed as a parameter. 
+Take in account that the method #inflate_json! mutates the object. 
 Your final result is the output of the method.
 
 ### Recycle JPath (Default)
@@ -54,8 +53,7 @@ Your final result is the output of the method.
 By default the parser will resolve references by JSON Path as in the above examples. You can tell it to do it in a more explicit way:
 
 ```ruby
-  parser = Json::Inflator::Parser.new
-  result = parser.process! sample_hash, :j_path
+  result = sample_json.inflate_json! settings: { mode: :j_path }
 ```
 
 ### Static Reference
@@ -64,47 +62,48 @@ Another proposal to resolve the circular references is to mark every object with
 The $values key will contain the elements of the array.
 
 ```ruby
-  sample_hash = { 
-    "$values" =>
-      [ { "$id" => "1", "id" => 231, "name" => "Test" }, { "$ref" => "1" } ], 
-    "$id" => "0" 
-  }
-  parser = Json::Inflator::Parser.new
-  result = parser.process! sample_hash, :static_reference
+  sample_json = [ { "$id" => "1", "id" => 231, "name" => "Test" }, { "$ref" => "1" } ]
+  result = sample_json.inflate_json! settings: { mode: :static_reference }
   # result contains:
   # [ { "id" => 231, "name": "Test" }, { "id" => 231, "name" => "Test" } ]
 ```
 
-### Customize
-
-When you are recycling you have several settings:
-
-```ruby
-  parser = Json::Inflator::Parser.new({
-    settings: { 
-      root_symbol: '$', # Just for JPath, change the root symbol. By default is $
-      mode: :j_path, # The way the JSON is received. By default it is j_path
-      strip_identifiers: true # Just for static reference, strips $id keys from resulting hash
-    }
-  })
-```
-
-If you want to customize the object processing in the recursive step, just pass a class in the constructor:
+### Array Preservation
+If the provided JSON maybe storing references for arrays also. By default, 'preserve_arrays' setting is true so it will check for
+arrays when resolving a reference. In the case of static references, an array must be provided in the following way in order
+to be tracked:
 
 ```ruby
-  class MyStaticReferenceHandler < StaticReferenceHandler
-
-    # Do whatever you need here
-    def process_object!( json_hash )
-      super()
-    end
-
-  end
-
-  parser = Json::Inflator::Parser.new({ object_handler_class: MyStaticReferenceHandler })
+  sample_json = {
+    "$values" =>
+      [ 
+        { "$id" => "1", "id" => 231, "name" => "Test" },
+        {
+          "$values" =>
+            [ 
+              { "$id" => "3", "id" => 232, "name" => "Test A" }, 
+              { "$id" => "4", "id" => 233, "name" => "Test B" }
+            ],
+          "$id" => "2" 
+        },        
+        { "$ref" => "2" } 
+      ], 
+    "$id" => "0" 
+  }
+  result = sample_json.inflate_json! settings: { mode: :static_reference, preserve_arrays: true }
+  # result contains:
+  # [ 
+  #   { "$id" => "1", "id" => 231, "name" => "Test" },
+  #   [ 
+  #     { "$id" => "3", "id" => 232, "name" => "Test A" }, 
+  #     { "$id" => "4", "id" => 233, "name" => "Test B" }
+  #   ],
+  #   [ 
+  #     { "$id" => "3", "id" => 232, "name" => "Test A" }, 
+  #     { "$id" => "4", "id" => 233, "name" => "Test B" }
+  #   ]
+  # ]
 ```
-
-To use the JPath logic just inherit from JPathHandler
 
 ## Development
 
