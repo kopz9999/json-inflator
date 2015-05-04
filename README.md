@@ -42,7 +42,7 @@ Call inflate_json! method for a decycled array or hash:
   sample_json = [ { "id" => 231, "name" => "Test" }, { "$ref" => "$[0]" } ]
   result = sample_json.inflate_json!
   # result contains:
-  # [ { "id" => 231, "name": "Test" }, { "id" => 231, "name" => "Test" } ]
+  [ { "id" => 231, "name": "Test" }, { "id" => 231, "name" => "Test" } ]
 ```
 
 Take in account that the method #inflate_json! mutates the object. 
@@ -65,7 +65,7 @@ The $values key will contain the elements of the array.
   sample_json = [ { "$id" => "1", "id" => 231, "name" => "Test" }, { "$ref" => "1" } ]
   result = sample_json.inflate_json! settings: { mode: :static_reference }
   # result contains:
-  # [ { "id" => 231, "name": "Test" }, { "id" => 231, "name" => "Test" } ]
+  [ { "id" => 231, "name": "Test" }, { "id" => 231, "name" => "Test" } ]
 ```
 
 ### Array Preservation
@@ -92,17 +92,17 @@ to be tracked:
   }
   result = sample_json.inflate_json! settings: { mode: :static_reference, preserve_arrays: true }
   # result contains:
-  # [ 
-  #   { "$id" => "1", "id" => 231, "name" => "Test" },
-  #   [ 
-  #     { "$id" => "3", "id" => 232, "name" => "Test A" }, 
-  #     { "$id" => "4", "id" => 233, "name" => "Test B" }
-  #   ],
-  #   [ 
-  #     { "$id" => "3", "id" => 232, "name" => "Test A" }, 
-  #     { "$id" => "4", "id" => 233, "name" => "Test B" }
-  #   ]
-  # ]
+  [ 
+    { "$id" => "1", "id" => 231, "name" => "Test" },
+    [ 
+      { "$id" => "3", "id" => 232, "name" => "Test A" }, 
+      { "$id" => "4", "id" => 233, "name" => "Test B" }
+    ],
+    [ 
+      { "$id" => "3", "id" => 232, "name" => "Test A" }, 
+      { "$id" => "4", "id" => 233, "name" => "Test B" }
+    ]
+  ]
 ```
 
 ## Development
