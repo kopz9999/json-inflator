@@ -1,9 +1,9 @@
 require "json/inflator/version"
-require "json/inflator/object_handler"
-require "json/inflator/j_path_handler"
-require "json/inflator/static_reference_handler"
+require "json/inflator/utils"
 require "json/inflator/settings"
-require "json/inflator/parser"
+require "json/inflator/object_manager"
+require "json/inflator/inflatable"
+require "json/inflator/core_ext"
 
 module Json
   module Inflator

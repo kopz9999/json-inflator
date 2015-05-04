@@ -12,6 +12,11 @@ module Json
       Identifier = '$id'
     end
 
+    module Error
+      class UndefinedReference < StandardError; end
+      class WrongSettings < StandardError; end
+    end
+
     module ClassMethods
 
       def default_settings
